@@ -1,9 +1,10 @@
 const { decode } = require('64');
+const BufferBuilder = require('buffer-builder');
 
 module.exports = (encoding, body) => {
   switch (encoding) {
     case 'base64':
-      return decode(body);
+      return decode(clean(body));
     case 'quoted-printable':
       return convertQuotedPrintable(body);
     case '8bit':
@@ -13,6 +14,18 @@ module.exports = (encoding, body) => {
     default:
       throw new Error(`Unknown encoding ${encoding}body: ${body}`);
   }
+};
+
+const clean = (body) => {
+  const buffBuild = new BufferBuilder();
+  const start = 0;
+  for (let i = 0; i < body.length; i++) {
+    for (;i < body.length && body[i] !== CR && body[i] !== LF; i++);
+    const end = i;
+    for (;i < body.length && (body[i] === CR || body[i] === LF); i++);
+    buffBuild.appendBuffer(body.slice(start, end));
+  }
+  return buffBuild.get();
 };
 
 const EQUALS = '='.charCodeAt(0);
