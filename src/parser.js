@@ -78,10 +78,10 @@ module.exports = class Parser {
   rewrite() {
     const entries = this.parts
       .filter(part => part.location)
-      .map(part => [part.location.trim(), this.rewriteFn(part.location).trim()]);
+      .map(part => [part.location.trim(), this.rewriteFn(part.location, part).trim()]);
     const rewriteMap = new Map(entries);
     for (const part of this.parts.filter(x => x.id)) {
-      rewriteMap.set(`cid:${part.id}`, this.rewriteFn(part.location || part.id.trim()));
+      rewriteMap.set(`cid:${part.id}`, this.rewriteFn(part.location || part.id.trim(), part));
     }
     for (const part of this.parts) {
       const replacer = ({
@@ -96,7 +96,7 @@ module.exports = class Parser {
 
   spit() {
     return this.parts.map(part => ({
-      filename: this.rewriteFn(part.location || part.id),
+      filename: this.rewriteFn(part.location || part.id, part),
       content: this.gotString ? part.body.toString() : part.body,
       type: part.type,
     }));
