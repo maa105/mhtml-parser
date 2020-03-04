@@ -18,12 +18,13 @@ module.exports = (encoding, body) => {
 
 const clean = (body) => {
   const buffBuild = new BufferBuilder();
-  const start = 0;
+  let start = 0;
   for (let i = 0; i < body.length; i++) {
     for (;i < body.length && body[i] !== CR && body[i] !== LF; i++);
     const end = i;
     for (;i < body.length && (body[i] === CR || body[i] === LF); i++);
     buffBuild.appendBuffer(body.slice(start, end));
+    start = i;
   }
   return buffBuild.get();
 };
