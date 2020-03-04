@@ -4,7 +4,7 @@ declare module 'fast-mhtml' {
     maxFileSize?: number
   }
   interface IFileResult {
-    contents: Buffer | string;
+    content: Buffer | string;
     type: string;
     filename: string;
   }
